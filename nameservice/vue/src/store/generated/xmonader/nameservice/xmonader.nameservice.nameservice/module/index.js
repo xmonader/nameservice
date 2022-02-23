@@ -3,8 +3,10 @@ import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
 import { MsgBuyName } from "./types/nameservice/tx";
+import { MsgSetName } from "./types/nameservice/tx";
 const types = [
     ["/xmonader.nameservice.nameservice.MsgBuyName", MsgBuyName],
+    ["/xmonader.nameservice.nameservice.MsgSetName", MsgSetName],
 ];
 export const MissingWalletError = new Error("wallet is required");
 export const registry = new Registry(types);
@@ -26,6 +28,7 @@ const txClient = async (wallet, { addr: addr } = { addr: "http://localhost:26657
     return {
         signAndBroadcast: (msgs, { fee, memo } = { fee: defaultFee, memo: "" }) => client.signAndBroadcast(address, msgs, fee, memo),
         msgBuyName: (data) => ({ typeUrl: "/xmonader.nameservice.nameservice.MsgBuyName", value: MsgBuyName.fromPartial(data) }),
+        msgSetName: (data) => ({ typeUrl: "/xmonader.nameservice.nameservice.MsgSetName", value: MsgSetName.fromPartial(data) }),
     };
 };
 const queryClient = async ({ addr: addr } = { addr: "http://localhost:1317" }) => {
