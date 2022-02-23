@@ -50,3 +50,4 @@ curl https://get.starport.com/xmonader/nameservice@latest! | sudo bash
 - [Starport docs](https://docs.starport.com)
 - [Cosmos SDK docs](https://docs.cosmos.network)
 - [Developer Chat](https://discord.gg/H6wGTY8sxw)
+https://docs.starport.com/guide/nameservice/05-play.html#query-the-bank-balance
