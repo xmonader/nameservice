@@ -2,9 +2,11 @@
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
+import { MsgDeleteName } from "./types/nameservice/tx";
 import { MsgBuyName } from "./types/nameservice/tx";
 import { MsgSetName } from "./types/nameservice/tx";
 const types = [
+    ["/xmonader.nameservice.nameservice.MsgDeleteName", MsgDeleteName],
     ["/xmonader.nameservice.nameservice.MsgBuyName", MsgBuyName],
     ["/xmonader.nameservice.nameservice.MsgSetName", MsgSetName],
 ];
@@ -27,6 +29,7 @@ const txClient = async (wallet, { addr: addr } = { addr: "http://localhost:26657
     const { address } = (await wallet.getAccounts())[0];
     return {
         signAndBroadcast: (msgs, { fee, memo } = { fee: defaultFee, memo: "" }) => client.signAndBroadcast(address, msgs, fee, memo),
+        msgDeleteName: (data) => ({ typeUrl: "/xmonader.nameservice.nameservice.MsgDeleteName", value: MsgDeleteName.fromPartial(data) }),
         msgBuyName: (data) => ({ typeUrl: "/xmonader.nameservice.nameservice.MsgBuyName", value: MsgBuyName.fromPartial(data) }),
         msgSetName: (data) => ({ typeUrl: "/xmonader.nameservice.nameservice.MsgSetName", value: MsgSetName.fromPartial(data) }),
     };

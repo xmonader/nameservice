@@ -19962,6 +19962,8 @@ definitions:
       freezing clients
   xmonader.nameservice.nameservice.MsgBuyNameResponse:
     type: object
+  xmonader.nameservice.nameservice.MsgDeleteNameResponse:
+    type: object
   xmonader.nameservice.nameservice.MsgSetNameResponse:
     type: object
   xmonader.nameservice.nameservice.Params:
