@@ -150,5 +150,34 @@ export class Api extends HttpClient {
             format: "json",
             ...params,
         });
+        /**
+         * No description
+         *
+         * @tags Query
+         * @name QueryWhoisAll
+         * @summary Queries a list of Whois items.
+         * @request GET:/xmonader/nameservice/nameservice/whois
+         */
+        this.queryWhoisAll = (query, params = {}) => this.request({
+            path: `/xmonader/nameservice/nameservice/whois`,
+            method: "GET",
+            query: query,
+            format: "json",
+            ...params,
+        });
+        /**
+         * No description
+         *
+         * @tags Query
+         * @name QueryWhois
+         * @summary Queries a Whois by index.
+         * @request GET:/xmonader/nameservice/nameservice/whois/{index}
+         */
+        this.queryWhois = (index, params = {}) => this.request({
+            path: `/xmonader/nameservice/nameservice/whois/${index}`,
+            method: "GET",
+            format: "json",
+            ...params,
+        });
     }
 }

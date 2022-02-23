@@ -2,7 +2,8 @@ import { txClient, queryClient, MissingWalletError, registry } from './module';
 // @ts-ignore
 import { SpVuexError } from '@starport/vuex';
 import { Params } from "./module/types/nameservice/params";
-export { Params };
+import { Whois } from "./module/types/nameservice/whois";
+export { Params, Whois };
 async function initTxClient(vuexGetters) {
     return await txClient(vuexGetters['common/wallet/signer'], {
         addr: vuexGetters['common/env/apiTendermint']
@@ -37,8 +38,11 @@ function getStructure(template) {
 const getDefaultState = () => {
     return {
         Params: {},
+        Whois: {},
+        WhoisAll: {},
         _Structure: {
             Params: getStructure(Params.fromPartial({})),
+            Whois: getStructure(Whois.fromPartial({})),
         },
         _Registry: registry,
         _Subscriptions: new Set(),
@@ -69,6 +73,18 @@ export default {
                 params.query = null;
             }
             return state.Params[JSON.stringify(params)] ?? {};
+        },
+        getWhois: (state) => (params = { params: {} }) => {
+            if (!params.query) {
+                params.query = null;
+            }
+            return state.Whois[JSON.stringify(params)] ?? {};
+        },
+        getWhoisAll: (state) => (params = { params: {} }) => {
+            if (!params.query) {
+                params.query = null;
+            }
+            return state.WhoisAll[JSON.stringify(params)] ?? {};
         },
         getTypeStructure: (state) => (type) => {
             return state._Structure[type].fields;
@@ -115,6 +131,38 @@ export default {
             }
             catch (e) {
                 throw new SpVuexError('QueryClient:QueryParams', 'API Node Unavailable. Could not perform query: ' + e.message);
+            }
+        },
+        async QueryWhois({ commit, rootGetters, getters }, { options: { subscribe, all } = { subscribe: false, all: false }, params, query = null }) {
+            try {
+                const key = params ?? {};
+                const queryClient = await initQueryClient(rootGetters);
+                let value = (await queryClient.queryWhois(key.index)).data;
+                commit('QUERY', { query: 'Whois', key: { params: { ...key }, query }, value });
+                if (subscribe)
+                    commit('SUBSCRIBE', { action: 'QueryWhois', payload: { options: { all }, params: { ...key }, query } });
+                return getters['getWhois']({ params: { ...key }, query }) ?? {};
+            }
+            catch (e) {
+                throw new SpVuexError('QueryClient:QueryWhois', 'API Node Unavailable. Could not perform query: ' + e.message);
+            }
+        },
+        async QueryWhoisAll({ commit, rootGetters, getters }, { options: { subscribe, all } = { subscribe: false, all: false }, params, query = null }) {
+            try {
+                const key = params ?? {};
+                const queryClient = await initQueryClient(rootGetters);
+                let value = (await queryClient.queryWhoisAll(query)).data;
+                while (all && value.pagination && value.pagination.next_key != null) {
+                    let next_values = (await queryClient.queryWhoisAll({ ...query, 'pagination.key': value.pagination.next_key })).data;
+                    value = mergeResults(value, next_values);
+                }
+                commit('QUERY', { query: 'WhoisAll', key: { params: { ...key }, query }, value });
+                if (subscribe)
+                    commit('SUBSCRIBE', { action: 'QueryWhoisAll', payload: { options: { all }, params: { ...key }, query } });
+                return getters['getWhoisAll']({ params: { ...key }, query }) ?? {};
+            }
+            catch (e) {
+                throw new SpVuexError('QueryClient:QueryWhoisAll', 'API Node Unavailable. Could not perform query: ' + e.message);
             }
         },
         async sendMsgDeleteName({ rootGetters }, { value, fee = [], memo = '' }) {

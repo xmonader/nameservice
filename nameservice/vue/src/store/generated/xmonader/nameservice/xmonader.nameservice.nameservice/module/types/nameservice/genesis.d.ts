@@ -1,10 +1,12 @@
 import { Params } from "../nameservice/params";
+import { Whois } from "../nameservice/whois";
 import { Writer, Reader } from "protobufjs/minimal";
 export declare const protobufPackage = "xmonader.nameservice.nameservice";
 /** GenesisState defines the nameservice module's genesis state. */
 export interface GenesisState {
-    /** this line is used by starport scaffolding # genesis/proto/state */
     params: Params | undefined;
+    /** this line is used by starport scaffolding # genesis/proto/state */
+    whoisList: Whois[];
 }
 export declare const GenesisState: {
     encode(message: GenesisState, writer?: Writer): Writer;
