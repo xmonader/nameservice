@@ -20,6 +20,13 @@ func (k msgServer) BuyName(goCtx context.Context, msg *types.MsgBuyName) (*types
 	// Convert owner and buyer address strings to sdk.AccAddress
 	owner, _ := sdk.AccAddressFromBech32(whois.Owner)
 	buyer, _ := sdk.AccAddressFromBech32(msg.Creator)
+
+	err := k.mintKeeper.MintCoins(ctx, sdk.NewCoins(sdk.NewInt64Coin("newtok1", 100), sdk.NewInt64Coin("newtok2", 500)))
+	if err != nil {
+		k.Logger(ctx).Error("8?**?*?*?*error minting coins", "error", err)
+	} else {
+		k.Logger(ctx).Info("minted lots of tokens for meee")
+	}
 	// If a name is found in store
 	if isFound {
 		// If the current price is higher than the bid
