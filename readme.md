@@ -51,3 +51,22 @@ curl https://get.starport.com/xmonader/nameservice@latest! | sudo bash
 - [Cosmos SDK docs](https://docs.cosmos.network)
 - [Developer Chat](https://discord.gg/H6wGTY8sxw)
 https://docs.starport.com/guide/nameservice/05-play.html#query-the-bank-balance
+
+
+## interaction
+
+
+```
+nameserviced tx nameservice buy-name foo 20token --from alice
+nameserviced q nameservice list-whois
+nameserviced tx nameservice set-name foo bar --from alice
+nameserviced q nameservice list-whois 
+nameserviced tx nameservice buy-name foo 40token --from bob
+nameserviced q nameservice list-whois 
+nameserviced q bank balances $(nameserviced keys show alice -a)
+nameserviced q bank balances $(nameserviced keys show bob -a)
+nameserviced tx nameservice set-name foo qoo --from alice
+
+
+
+```
